@@ -1,5 +1,4 @@
 import { NextResponse, NextRequest } from "next/server";
-
 import { db } from "@/lib/firebase";
 import { PostInputSchema } from "@/lib/zodSchemas";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
@@ -7,12 +6,13 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 /**
  * GET /api/posts/:id
  */
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest) {
   try {
-    const id = params.id;
+    const id = req.nextUrl.pathname.split("/").pop();
+    if (!id) {
+      return NextResponse.json({ message: "ID не вказано" }, { status: 400 });
+    }
+
     const snap = await getDoc(doc(db, "posts", id));
     if (!snap.exists()) {
       return NextResponse.json(
@@ -20,60 +20,57 @@ export async function GET(
         { status: 404 }
       );
     }
+
     const { title, content } = snap.data() as {
       title: string;
       content: string;
     };
     return NextResponse.json({ id: snap.id, title, content });
   } catch (error) {
-    console.error(`GET /api/posts/${params.id} error:`, error);
-    return NextResponse.json(
-      { message: "Помилка при завантаженні поста" },
-      { status: 500 }
-    );
+    console.error("GET error:", error);
+    return NextResponse.json({ message: "Помилка сервера" }, { status: 500 });
   }
 }
 
 /**
  * PUT /api/posts/:id
  */
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest) {
   try {
-    const body = await req.json(); // тут була помилка
+    const id = req.nextUrl.pathname.split("/").pop();
+    if (!id) {
+      return NextResponse.json({ message: "ID не вказано" }, { status: 400 });
+    }
+
+    const body = await req.json();
     const parsed = PostInputSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(parsed.error.format(), { status: 400 });
     }
-    const ref = doc(db, "posts", params.id);
+
+    const ref = doc(db, "posts", id);
     await updateDoc(ref, parsed.data);
-    return NextResponse.json({ id: params.id, ...parsed.data });
+    return NextResponse.json({ id, ...parsed.data });
   } catch (error) {
-    console.error(`PUT /api/posts/${params.id} error:`, error);
-    return NextResponse.json(
-      { message: "Не вдалося оновити пост" },
-      { status: 500 }
-    );
+    console.error("PUT error:", error);
+    return NextResponse.json({ message: "Помилка сервера" }, { status: 500 });
   }
 }
 
 /**
  * DELETE /api/posts/:id
  */
-export async function DELETE(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest) {
   try {
-    await deleteDoc(doc(db, "posts", params.id));
+    const id = req.nextUrl.pathname.split("/").pop();
+    if (!id) {
+      return NextResponse.json({ message: "ID не вказано" }, { status: 400 });
+    }
+
+    await deleteDoc(doc(db, "posts", id));
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error(`DELETE /api/posts/${params.id} error:`, error);
-    return NextResponse.json(
-      { message: "Не вдалося видалити пост" },
-      { status: 500 }
-    );
+    console.error("DELETE error:", error);
+    return NextResponse.json({ message: "Помилка сервера" }, { status: 500 });
   }
 }

@@ -1,23 +1,23 @@
-// app/api/posts/[id]/route.ts
-
 import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
 import { PostInputSchema } from "@/lib/zodSchemas";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 
-interface Params {
-  id: string;
-}
-
 /**
  * GET /api/posts/:id
  */
-export async function GET(_request: Request, { params }: { params: Params }) {
+export async function GET(
+  _request: Request,
+  context: { params: { id: string } }
+) {
   try {
-    const { id } = params;
+    const { id } = context.params;
     const snap = await getDoc(doc(db, "posts", id));
     if (!snap.exists()) {
-      return NextResponse.json({ message: "Пост не знайден" }, { status: 404 });
+      return NextResponse.json(
+        { message: "Пост не знайдено" },
+        { status: 404 }
+      );
     }
     const { title, content } = snap.data() as {
       title: string;
@@ -25,9 +25,9 @@ export async function GET(_request: Request, { params }: { params: Params }) {
     };
     return NextResponse.json({ id: snap.id, title, content });
   } catch (error) {
-    console.error(`GET /api/posts/${params.id} error:`, error);
+    console.error(`GET /api/posts/${context.params.id} error:`, error);
     return NextResponse.json(
-      { message: "Помилка при завантажені поста" },
+      { message: "Помилка при завантаженні поста" },
       { status: 500 }
     );
   }
@@ -36,20 +36,23 @@ export async function GET(_request: Request, { params }: { params: Params }) {
 /**
  * PUT /api/posts/:id
  */
-export async function PUT(request: Request, { params }: { params: Params }) {
+export async function PUT(
+  request: Request,
+  context: { params: { id: string } }
+) {
   try {
     const body = await request.json();
     const parsed = PostInputSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(parsed.error.format(), { status: 400 });
     }
-    const ref = doc(db, "posts", params.id);
+    const ref = doc(db, "posts", context.params.id);
     await updateDoc(ref, parsed.data);
-    return NextResponse.json({ id: params.id, ...parsed.data });
+    return NextResponse.json({ id: context.params.id, ...parsed.data });
   } catch (error) {
-    console.error(`PUT /api/posts/${params.id} error:`, error);
+    console.error(`PUT /api/posts/${context.params.id} error:`, error);
     return NextResponse.json(
-      { message: "Не вділося обновити пост" },
+      { message: "Не вдалося оновити пост" },
       { status: 500 }
     );
   }
@@ -58,12 +61,15 @@ export async function PUT(request: Request, { params }: { params: Params }) {
 /**
  * DELETE /api/posts/:id
  */
-export async function DELETE(_req: Request, { params }: { params: Params }) {
+export async function DELETE(
+  _request: Request,
+  context: { params: { id: string } }
+) {
   try {
-    await deleteDoc(doc(db, "posts", params.id));
+    await deleteDoc(doc(db, "posts", context.params.id));
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error(`DELETE /api/posts/${params.id} error:`, error);
+    console.error(`DELETE /api/posts/${context.params.id} error:`, error);
     return NextResponse.json(
       { message: "Не вдалося видалити пост" },
       { status: 500 }

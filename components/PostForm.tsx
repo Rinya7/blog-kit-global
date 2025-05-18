@@ -38,7 +38,7 @@ export function PostForm() {
       await dispatch(createPost(data)).unwrap();
       reset();
     } catch (err: unknown) {
-      setLocalError(getErrorMessage(err) || "Ошибка при отправке");
+      setLocalError(getErrorMessage(err) || "Помилка при відправлені");
     }
   };
 
@@ -49,7 +49,7 @@ export function PostForm() {
     >
       <div className="px-6 py-4 border-b dark:border-gray-700">
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-          Создать новый пост
+          Створити новий пост
         </h2>
       </div>
 
@@ -64,7 +64,7 @@ export function PostForm() {
           </label>
           <input
             {...register("title")}
-            placeholder="Введите заголовок"
+            placeholder="Введіть заголовок"
             className="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {errors.title && (
@@ -74,11 +74,11 @@ export function PostForm() {
 
         <div>
           <label className="block mb-1 text-gray-700 dark:text-gray-300">
-            Содержание
+            Зміст
           </label>
           <textarea
             {...register("content")}
-            placeholder="Введите текст поста"
+            placeholder="Введіть текст поста"
             rows={6}
             className="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -94,7 +94,7 @@ export function PostForm() {
           disabled={isSubmitting}
           className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
         >
-          {isSubmitting ? "Сохраняю…" : "Создать пост"}
+          {isSubmitting ? "Зберігаю…" : "Створити пост"}
         </button>
       </div>
     </form>

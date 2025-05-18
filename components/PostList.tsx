@@ -40,10 +40,10 @@ export function PostList() {
   }, [items, debouncedQuery]);
 
   if (loading)
-    return <div className="text-center py-10 text-gray-500">Загрузка…</div>;
+    return <div className="text-center py-10 text-gray-500">Завантаження…</div>;
   if (error)
     return (
-      <div className="text-center py-10 text-red-600">Ошибка: {error}</div>
+      <div className="text-center py-10 text-red-600">Помилка: {error}</div>
     );
 
   return (
@@ -51,7 +51,7 @@ export function PostList() {
       <div className="max-w-xl mx-auto">
         <input
           type="text"
-          placeholder="Поиск..."
+          placeholder="Пошук..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-400"
@@ -60,7 +60,7 @@ export function PostList() {
 
       <ul className="space-y-6">
         {filtered.length === 0 ? (
-          <li className="text-center text-gray-500">Ничего не найдено</li>
+          <li className="text-center text-gray-500">Нічого не знайдено</li>
         ) : (
           filtered.map((post) => (
             <li key={post.id}>
@@ -80,7 +80,7 @@ export function PostList() {
                 </p>
                 <div className="px-6 pb-4">
                   <span className="text-blue-600 hover:underline">
-                    Читать дальше →
+                    Читати далі →
                   </span>
                 </div>
               </Link>

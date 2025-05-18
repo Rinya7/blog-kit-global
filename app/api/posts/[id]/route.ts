@@ -8,7 +8,7 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
  */
 export async function GET(
   _request: Request,
-  context: { params: { id: string } }
+  context: { params: Record<string, string> }
 ) {
   try {
     const { id } = context.params;
@@ -38,7 +38,7 @@ export async function GET(
  */
 export async function PUT(
   request: Request,
-  context: { params: { id: string } }
+  context: { params: Record<string, string> }
 ) {
   try {
     const body = await request.json();
@@ -63,7 +63,7 @@ export async function PUT(
  */
 export async function DELETE(
   _request: Request,
-  context: { params: { id: string } }
+  context: { params: Record<string, string> }
 ) {
   try {
     await deleteDoc(doc(db, "posts", context.params.id));

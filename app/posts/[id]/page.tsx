@@ -5,6 +5,8 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Link from "next/link";
 import DeletePostButton from "@/components/DeletePostButton";
+import CommentsList from "@/components/CommentsList";
+import CommentsForm from "@/components/CommentsForm";
 
 interface AsyncParams {
   params: Promise<{ id: string }>;
@@ -88,6 +90,11 @@ export default async function PostPage({ params }: AsyncParams) {
             {content}
           </p>
         </article>
+        <section className="px-6 pb-8 space-y-6">
+          <h2 className="text-2xl font-semibold">Комментарии</h2>
+          <CommentsList postId={id} />
+          <CommentsForm postId={id} />
+        </section>
       </div>
     </main>
   );

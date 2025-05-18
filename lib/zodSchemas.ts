@@ -14,3 +14,9 @@ export const PostInputSchema = z.object({
 
 // Тип для TS
 export type PostInput = z.infer<typeof PostInputSchema>;
+
+export const CommentSchema = z.object({
+  author: z.string().min(1, "Укажите имя").max(50),
+  text: z.string().min(1, "Комментарий не может быть пуст").max(500),
+});
+export type CommentInput = z.infer<typeof CommentSchema>;

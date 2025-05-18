@@ -8,16 +8,10 @@ import { PostInput, PostInputSchema } from "@/lib/zodSchemas";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { createPost } from "@/store/postsSlice";
 
-/** Приводит любой `unknown` к понятному сообщению */
 function getErrorMessage(err: unknown): string {
-  if (err instanceof Error) {
-    return err.message;
-  }
-  if (typeof err === "string") {
-    return err;
-  }
+  if (err instanceof Error) return err.message;
+  if (typeof err === "string") return err;
   try {
-    // если это объект без message, или что-то ещё
     return JSON.stringify(err);
   } catch {
     return String(err);
@@ -27,8 +21,8 @@ function getErrorMessage(err: unknown): string {
 export function PostForm() {
   const dispatch = useAppDispatch();
   const { error: createError } = useAppSelector((s) => s.posts);
-
   const [localError, setLocalError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -41,54 +35,68 @@ export function PostForm() {
   const onSubmit = async (data: PostInput) => {
     setLocalError(null);
     try {
-      // unwrap() выбросит ошибку, если экшен отклонится
       await dispatch(createPost(data)).unwrap();
       reset();
     } catch (err: unknown) {
-      // без any, только unknown + наш геттер
-      const msg = getErrorMessage(err) || "Ошибка при отправке";
-      setLocalError(msg);
+      setLocalError(getErrorMessage(err) || "Ошибка при отправке");
     }
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="max-w-xl mx-auto p-6 border rounded-lg space-y-4"
+      className="max-w-2xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden"
     >
-      {/* Показываем ошибку из Redux или локальную */}
-      {(createError || localError) && (
-        <p className="text-red-600">{localError ?? createError}</p>
-      )}
-
-      <div>
-        <input
-          {...register("title")}
-          placeholder="Заголовок"
-          className="w-full p-2 border rounded"
-        />
-        {errors.title && <p className="text-red-600">{errors.title.message}</p>}
+      <div className="px-6 py-4 border-b dark:border-gray-700">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          Создать новый пост
+        </h2>
       </div>
 
-      <div>
-        <textarea
-          {...register("content")}
-          placeholder="Содержание"
-          rows={6}
-          className="w-full p-2 border rounded"
-        />
-        {errors.content && (
-          <p className="text-red-600">{errors.content.message}</p>
+      <div className="px-6 py-4 space-y-4">
+        {(createError || localError) && (
+          <p className="text-red-600">{localError ?? createError}</p>
         )}
+
+        <div>
+          <label className="block mb-1 text-gray-700 dark:text-gray-300">
+            Заголовок
+          </label>
+          <input
+            {...register("title")}
+            placeholder="Введите заголовок"
+            className="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.title && (
+            <p className="mt-1 text-red-600">{errors.title.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block mb-1 text-gray-700 dark:text-gray-300">
+            Содержание
+          </label>
+          <textarea
+            {...register("content")}
+            placeholder="Введите текст поста"
+            rows={6}
+            className="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.content && (
+            <p className="mt-1 text-red-600">{errors.content.message}</p>
+          )}
+        </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
-      >
-        {isSubmitting ? "Сохраняю…" : "Создать пост"}
-      </button>
+      <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900 flex justify-end">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
+        >
+          {isSubmitting ? "Сохраняю…" : "Создать пост"}
+        </button>
+      </div>
     </form>
   );
 }

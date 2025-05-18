@@ -20,9 +20,9 @@ export async function generateMetadata({
     const snap = await getDoc(doc(db, "posts", id));
     return snap.exists()
       ? { title: snap.data().title as string }
-      : { title: "Пост не найден" };
+      : { title: "Пост не знайден" };
   } catch {
-    return { title: "Ошибка загрузки" };
+    return { title: "Помилка завантаження" };
   }
 }
 
@@ -35,7 +35,7 @@ export default async function PostPage({ params }: AsyncParams) {
   try {
     const snap = await getDoc(doc(db, "posts", id));
     if (!snap.exists()) {
-      loadError = "Пост не найден или удалён";
+      loadError = "Пост не знайден або видален";
     } else {
       const data = snap.data() as { title: string; content: string };
       title = data.title;
@@ -43,7 +43,7 @@ export default async function PostPage({ params }: AsyncParams) {
     }
   } catch (err) {
     console.error(`Error loading post ${id}:`, err);
-    loadError = "Не удалось загрузить пост";
+    loadError = "Не вдалося завантажити пост";
   }
 
   if (loadError) {
@@ -54,7 +54,7 @@ export default async function PostPage({ params }: AsyncParams) {
           href="/"
           className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
         >
-          На главную
+          На головну
         </Link>
       </main>
     );
@@ -76,7 +76,7 @@ export default async function PostPage({ params }: AsyncParams) {
               href={`/posts/${id}/edit`}
               className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition text-center"
             >
-              Редактировать
+              Редагувати
             </Link>
             <DeletePostButton
               id={id}
@@ -91,7 +91,7 @@ export default async function PostPage({ params }: AsyncParams) {
           </p>
         </article>
         <section className="px-6 pb-8 space-y-6">
-          <h2 className="text-2xl font-semibold">Комментарии</h2>
+          <h2 className="text-2xl font-semibold">Коментарії</h2>
           <CommentsList postId={id} />
           <CommentsForm postId={id} />
         </section>

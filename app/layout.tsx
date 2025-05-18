@@ -4,11 +4,6 @@ import { Provider } from "react-redux";
 import { store } from "../store";
 import "./globals.css";
 
-//export const metadata = {
-//  title: "Мой блог",
-//  description: "SPA-блог на Next.js 13",
-//};
-
 export default function RootLayout({
   children,
 }: {

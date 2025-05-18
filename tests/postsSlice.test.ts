@@ -36,7 +36,9 @@ jest.mock("firebase/firestore", () => ({
   updateDoc: jest.fn(async () => {}),
   deleteDoc: jest.fn(async () => {}),
   doc: jest.fn(),
+  getFirestore: jest.fn(), // 🧠 ← вот это добавь
 }));
+
 
 describe("postsSlice", () => {
   beforeEach(() => {

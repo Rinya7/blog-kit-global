@@ -1,35 +1,61 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
-import { store } from "../store";
+import { configureStore } from "@reduxjs/toolkit";
+import postsReducer from "../store/postsSlice";
 import { PostForm } from "../components/PostForm";
 import { PostInput } from "../lib/zodSchemas";
-import type { AppDispatch } from "../store";
 
-// ✅ Мокаем createPost, типизировано
-jest.mock("../store/postsSlice", () => ({
-  ...jest.requireActual("../store/postsSlice"),
-  createPost: (data: PostInput) => {
-    return async (dispatch: AppDispatch) => {
-      dispatch({
-        type: "posts/create/fulfilled",
-        payload: { id: "mock-id", ...data },
-      });
-      return { payload: { id: "mock-id", ...data } };
-    };
-  },
-}));
+// Создаём стор
+const createTestStore = () =>
+  configureStore({
+    reducer: {
+      posts: postsReducer,
+    },
+  });
+
+// Тип dispatch
+//type AppDispatch = ReturnType<typeof createTestStore>["dispatch"];
+
+// ✅ Мокаем createPost из thunks без any
+jest.mock("../store/thunks", () => {
+  const actual = jest.requireActual("../store/thunks");
+  return {
+    ...actual,
+    createPost: Object.assign(
+      (data: PostInput) => {
+        return {
+          type: "posts/create",
+          payload: { id: "mock-id", ...data },
+          unwrap: async () => ({ id: "mock-id", ...data }),
+        };
+      },
+      {
+        type: "posts/create",
+        fulfilled: { type: "posts/create/fulfilled" },
+      }
+    ),
+  };
+});
 
 describe("PostForm", () => {
-  it("рендерит и отправляет форму", async () => {
+  const renderWithStore = () => {
+    const store = createTestStore();
+
     render(
       <Provider store={store}>
         <PostForm />
       </Provider>
     );
 
-    const titleInput = screen.getByPlaceholderText("Заголовок");
-    const contentInput = screen.getByPlaceholderText("Содержание");
-    const submitBtn = screen.getByRole("button", { name: /создать пост/i });
+    return store;
+  };
+
+  it("рендерить и відправляє форму", async () => {
+    renderWithStore();
+
+    const titleInput = screen.getByPlaceholderText("Введіть заголовок");
+    const contentInput = screen.getByPlaceholderText("Введіть текст поста");
+    const submitBtn = screen.getByRole("button", { name: /створити пост/i });
 
     fireEvent.change(titleInput, { target: { value: "Test" } });
     fireEvent.change(contentInput, { target: { value: "Content here" } });
@@ -41,15 +67,10 @@ describe("PostForm", () => {
     });
   });
 
-  it("показывает ошибку валидации", async () => {
-    render(
-      <Provider store={store}>
-        <PostForm />
-      </Provider>
-    );
+  it("Показує помилку валідації", async () => {
+    renderWithStore();
 
-    fireEvent.click(screen.getByRole("button", { name: /создать пост/i }));
-
-    expect(await screen.findByText(/минимум 3 символа/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /створити пост/i }));
+    expect(await screen.findByText(/мінімум 3 символи/i)).toBeInTheDocument();
   });
 });

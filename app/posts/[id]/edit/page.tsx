@@ -17,8 +17,8 @@ export async function generateMetadata({
   const snap = await getDoc(doc(db, "posts", id));
   return {
     title: snap.exists()
-      ? `Редактировать: ${snap.data().title}`
-      : "Пост не найден",
+      ? `Редагувати: ${snap.data().title}`
+      : "Пост не знайден",
   };
 }
 
@@ -29,9 +29,9 @@ export default async function EditPostPage({ params }: AsyncParams) {
   if (!snap.exists()) {
     return (
       <main className="container mx-auto p-6 text-center">
-        <h1 className="text-2xl text-red-600">Пост не найден</h1>
+        <h1 className="text-2xl text-red-600">Пост не знайден</h1>
         <Link href="/" className="mt-4 inline-block text-blue-600">
-          На главную
+          На головну
         </Link>
       </main>
     );
@@ -42,7 +42,7 @@ export default async function EditPostPage({ params }: AsyncParams) {
 
   return (
     <main className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Редактировать пост</h1>
+      <h1 className="text-3xl font-bold mb-6">Редагувати пост</h1>
       {/*Клиентская форма  @ts-expect-error Async Server Component */}
       <EditPostForm
         id={id}

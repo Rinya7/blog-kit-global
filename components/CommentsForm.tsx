@@ -30,7 +30,7 @@ export default function CommentsForm({ postId }: { postId: string }) {
       <div>
         <input
           {...register("author")}
-          placeholder="Ваше имя"
+          placeholder="Ваше ім'я"
           className="w-full p-2 border rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-400"
         />
         {errors.author && (
@@ -40,7 +40,7 @@ export default function CommentsForm({ postId }: { postId: string }) {
       <div>
         <textarea
           {...register("text")}
-          placeholder="Ваш комментарий"
+          placeholder="Ваш коментарій"
           rows={3}
           className="w-full p-2 border rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-400"
         />
@@ -51,7 +51,7 @@ export default function CommentsForm({ postId }: { postId: string }) {
         disabled={isSubmitting}
         className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg"
       >
-        {isSubmitting ? "Сохраняю…" : "Оставить комментарий"}
+        {isSubmitting ? "Зберігаю…" : "Залишити коментарій"}
       </button>
     </form>
   );

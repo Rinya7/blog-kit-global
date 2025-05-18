@@ -54,7 +54,7 @@ export default function EditPostForm({
       </div>
 
       <div>
-        <label className="block mb-1">Содержание</label>
+        <label className="block mb-1">Зміст</label>
         <textarea
           {...register("content")}
           rows={6}
@@ -70,7 +70,7 @@ export default function EditPostForm({
         disabled={isSubmitting}
         className="px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"
       >
-        {isSubmitting ? "Сохраняю…" : "Сохранить"}
+        {isSubmitting ? "Зберігаю…" : "Зберегти"}
       </button>
     </form>
   );

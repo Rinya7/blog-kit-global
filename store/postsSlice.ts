@@ -4,12 +4,13 @@ import { db } from "../lib/firebase";
 import {
   collection,
   getDocs,
-  addDoc,
+  //  addDoc,
   updateDoc,
   deleteDoc,
   doc,
 } from "firebase/firestore";
 import { PostInput } from "../lib/zodSchemas";
+import { createPost } from "./thunks";
 
 // Интерфейс одного поста
 export interface Post {
@@ -45,13 +46,13 @@ export const fetchPosts = createAsyncThunk("posts/fetchAll", async () => {
 /**
  * Создание нового поста
  */
-export const createPost = createAsyncThunk(
-  "posts/create",
-  async (data: PostInput) => {
-    const ref = await addDoc(collection(db, "posts"), data);
-    return { id: ref.id, ...data } as Post;
-  }
-);
+//export const createPost = createAsyncThunk(
+//  "posts/create",
+//  async (data: PostInput) => {
+//    const ref = await addDoc(collection(db, "posts"), data);
+//    return { id: ref.id, ...data } as Post;
+//  }
+//);
 
 /**
  * Обновление существующего поста
@@ -66,7 +67,7 @@ export const updatePost = createAsyncThunk(
 );
 
 /**
- * Удаление поста
+ * Видалення поста
  */
 export const deletePost = createAsyncThunk(
   "posts/delete",
@@ -112,3 +113,4 @@ const postsSlice = createSlice({
 });
 
 export default postsSlice.reducer;
+export { createPost };

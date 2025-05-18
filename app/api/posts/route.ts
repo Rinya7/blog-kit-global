@@ -22,7 +22,7 @@ export async function GET() {
   } catch (error) {
     console.error("GET /api/posts error:", error);
     return NextResponse.json(
-      { message: "Не удалось загрузить список постов" },
+      { message: "Не вдалося завантажити список постів" },
       { status: 500 }
     );
   }
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("POST /api/posts error:", error);
     return NextResponse.json(
-      { message: "Не удалось создать пост" },
+      { message: "Не вдалося створити пост" },
       { status: 500 }
     );
   }

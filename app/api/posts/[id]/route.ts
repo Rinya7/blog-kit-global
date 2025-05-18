@@ -17,7 +17,7 @@ export async function GET(_request: Request, { params }: { params: Params }) {
     const { id } = params;
     const snap = await getDoc(doc(db, "posts", id));
     if (!snap.exists()) {
-      return NextResponse.json({ message: "Пост не найден" }, { status: 404 });
+      return NextResponse.json({ message: "Пост не знайден" }, { status: 404 });
     }
     const { title, content } = snap.data() as {
       title: string;
@@ -27,7 +27,7 @@ export async function GET(_request: Request, { params }: { params: Params }) {
   } catch (error) {
     console.error(`GET /api/posts/${params.id} error:`, error);
     return NextResponse.json(
-      { message: "Ошибка при загрузке поста" },
+      { message: "Помилка при завантажені поста" },
       { status: 500 }
     );
   }
@@ -49,7 +49,7 @@ export async function PUT(request: Request, { params }: { params: Params }) {
   } catch (error) {
     console.error(`PUT /api/posts/${params.id} error:`, error);
     return NextResponse.json(
-      { message: "Не удалось обновить пост" },
+      { message: "Не вділося обновити пост" },
       { status: 500 }
     );
   }
@@ -65,7 +65,7 @@ export async function DELETE(_req: Request, { params }: { params: Params }) {
   } catch (error) {
     console.error(`DELETE /api/posts/${params.id} error:`, error);
     return NextResponse.json(
-      { message: "Не удалось удалить пост" },
+      { message: "Не вдалося видалити пост" },
       { status: 500 }
     );
   }

@@ -18,14 +18,14 @@ export default function DeletePostButton({ id, className = "" }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const handleDelete = async () => {
-    if (!window.confirm("Удалить этот пост навсегда?")) return;
+    if (!window.confirm("Видалити цей пост назавжди?")) return;
     setLoading(true);
     setError(null);
     try {
       await dispatch(deletePost(id)).unwrap();
       router.push("/");
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Ошибка при удалении";
+      const msg = err instanceof Error ? err.message : "Помилка при видалені";
       setError(msg);
       setLoading(false);
     }
@@ -45,7 +45,7 @@ export default function DeletePostButton({ id, className = "" }: Props) {
           ${className}
         `}
       >
-        {loading ? "Удаляю…" : "Удалить"}
+        {loading ? "Видаляю…" : "Видалити"}
       </button>
     </>
   );
